@@ -83,9 +83,7 @@
         android:textColor="#FFFFFF"
         android:textSize="48sp"
         app:backgroundTint="#3A3C38"
-        app:cornerRadius="40dp"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="321dp" />
+        app:cornerRadius="40dp" />
 
     <Button
         android:id="@+id/btn2"
@@ -133,9 +131,7 @@
         android:textColor="#FFFFFF"
         android:textSize="48sp"
         app:backgroundTint="#3A3C38"
-        app:cornerRadius="40dp"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="321dp" />
+        app:cornerRadius="40dp" />
 
     <Button
         android:id="@+id/btn3"
