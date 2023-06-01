@@ -17,7 +17,9 @@
         android:layout_marginStart="18dp"
         android:layout_marginTop="98dp"
         android:layout_marginBottom="609dp"
-        android:textColor="#FFFFFF" />
+        android:textAlignment="viewEnd"
+        android:textColor="#FFFFFF"
+        android:textSize="48sp" />
 
     <Button
         android:id="@+id/btnMin"
@@ -289,5 +291,7 @@
         android:layout_marginStart="18dp"
         android:layout_marginTop="220dp"
         android:layout_marginBottom="487dp"
-        android:textColor="#FFFFFF" />
+        android:textAlignment="viewEnd"
+        android:textColor="#FFFFFF"
+        android:textSize="48sp" />
 </RelativeLayout>
