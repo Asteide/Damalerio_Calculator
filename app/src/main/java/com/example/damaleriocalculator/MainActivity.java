@@ -2,10 +2,15 @@ package com.example.damaleriocalculator;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.text.DecimalFormat;
+import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,14 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView info;
     private Button clear;
     private TextView result;
-    private final char ADDITION = '+';
-    private final char SUBTRACTION = '-';
-    private final char MULTIPLICATION = '*';
-    private final char DIVISION = '/';
-    private final char EQU = 0;
-    private double val1 = Double.NaN;
-    private double val2;
-    private char ACTION;
+    private Button btnChrome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,173 +44,225 @@ public class MainActivity extends AppCompatActivity {
         zero.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                info.setText(info.getText().toString()+"0");
+                result.append("0");
             }
         });
 
         one.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                info.setText(info.getText().toString()+"1");
+                result.append("1");
             }
         });
 
         two.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                info.setText(info.getText().toString()+"2");
+                result.append("2");
             }
         });
 
         three.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                info.setText(info.getText().toString()+"3");
+                result.append("3");
             }
         });
 
         four.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                info.setText(info.getText().toString()+"4");
+                result.append("4");
             }
         });
 
         five.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                info.setText(info.getText().toString()+"5");
+                result.append("5");
             }
         });
 
         six.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                info.setText(info.getText().toString()+"6");
+                result.append("6");
             }
         });
 
         seven.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                info.setText(info.getText().toString()+"7");
+                result.append("7");
             }
         });
 
         eight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                info.setText(info.getText().toString()+"8");
+                result.append("8");
             }
         });
 
         nine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                info.setText(info.getText().toString()+"9");
+                result.append("9");
             }
         });
 
         sub.setOnClickListener((view) -> {
-            compute();
-            ACTION = SUBTRACTION;
-                result.setText(String.valueOf(val1) + "-");
-                info.setText(null);
+            result.append("-");
         });
 
         add.setOnClickListener((view) -> {
-            compute();
-            ACTION = ADDITION;
-                result.setText(String.valueOf(val1) + "+");
-                info.setText(null);
+            result.append("+");
         });
 
         mul.setOnClickListener((view) -> {
-            compute();
-            ACTION = MULTIPLICATION;
-                result.setText(String.valueOf(val1) + "*");
-                info.setText(null);
+            result.append("*");
         });
 
         div.setOnClickListener((view) -> {
-            compute();
-            ACTION = DIVISION;
-                result.setText(String.valueOf(val1) + "/");
-                info.setText(null);
+            result.append("/");
         });
 
         equal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                compute();
-                ACTION = EQU;
-                result.setText(result.getText().toString() + String.valueOf(val2) + "=" + String.valueOf(val1));
-                // 5 + 4 = 9
-                info.setText (null);
+                String expression = result.getText().toString();
+                try {
+                    double resultValue = evaluateExpression(expression);
+                    String formattedResult = formatResult(resultValue);
+                    info.setText(formattedResult);
+                } catch (ArithmeticException e) {
+                    info.setText("Error");
+                }
             }
         });
 
         clear.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                if(info.getText().length() > 0){
-                    CharSequence name = info.getText().toString();
-                    info.setText(name.subSequence(0, name.length()-1));
-                }
-                else{
-                    val1 = Double.NaN;
-                    val2 = Double.NaN;
-                    info.setText(null);
-                    result.setText(null);
-                }
+                result.setText("");
+                info.setText("");
+            }
+        });
+
+        btnChrome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openChrome(view);
             }
         });
     }
 
-    private void setupUIViews(){
-
-        zero = (Button) findViewById(R.id.btn0);
-        one = (Button) findViewById(R.id.btn1);
-        two = (Button) findViewById(R.id.btn2);
-        three = (Button) findViewById(R.id.btn3);
-        four = (Button) findViewById(R.id.btn4);
-        five = (Button) findViewById(R.id.btn5);
-        six = (Button) findViewById(R.id.btn6);
-        seven = (Button) findViewById(R.id.btn7);
-        eight = (Button) findViewById(R.id.btn8);
-        nine = (Button) findViewById(R.id.btn9);
-        add = (Button) findViewById(R.id.btnAdd);
-        sub = (Button) findViewById(R.id.btnMin);
-        mul = (Button) findViewById(R.id.btnMul);
-        div = (Button) findViewById(R.id.btnDiv);
-        equal = (Button) findViewById(R.id.btnEqu);
-        info = (TextView) findViewById(R.id.tvControl);
-        result = (TextView) findViewById(R.id.tvDisplay);
-        clear = (Button)findViewById(R.id.btnClear);
+    private void setupUIViews() {
+        zero = findViewById(R.id.btn0);
+        one = findViewById(R.id.btn1);
+        two = findViewById(R.id.btn2);
+        three = findViewById(R.id.btn3);
+        four = findViewById(R.id.btn4);
+        five = findViewById(R.id.btn5);
+        six = findViewById(R.id.btn6);
+        seven = findViewById(R.id.btn7);
+        eight = findViewById(R.id.btn8);
+        nine = findViewById(R.id.btn9);
+        add = findViewById(R.id.btnAdd);
+        sub = findViewById(R.id.btnMin);
+        mul = findViewById(R.id.btnMul);
+        div = findViewById(R.id.btnDiv);
+        equal = findViewById(R.id.btnEqu);
+        info = findViewById(R.id.tvControl);
+        result = findViewById(R.id.tvDisplay);
+        clear = findViewById(R.id.btnClear);
+        btnChrome = findViewById(R.id.btnChrome);
     }
 
-    private void compute(){
-        if(!Double.isNaN(val1)){
-            val2 = Double.parseDouble(info.getText().toString());
+    private double evaluateExpression(String expression) throws ArithmeticException {
+        try {
+            Stack<Double> numbers = new Stack<>();
+            Stack<Character> operators = new Stack<>();
 
-            switch (ACTION){
-                case ADDITION:
-                    val1 = val1 + val2;
-                    break;
-                case SUBTRACTION:
-                    val1 = val1 - val2;
-                    break;
-                case MULTIPLICATION:
-                    val1 = val1 * val2;
-                    break;
-                case DIVISION:
-                    val1 = val1 / val2;
-                    break;
-                case EQU:
-                    break;
+            for (int i = 0; i < expression.length(); i++) {
+                char ch = expression.charAt(i);
+                if (Character.isDigit(ch)) {
+                    StringBuilder sb = new StringBuilder();
+                    while (i < expression.length() && Character.isDigit(expression.charAt(i))) {
+                        sb.append(expression.charAt(i));
+                        i++;
+                    }
+                    i--;
+                    numbers.push(Double.parseDouble(sb.toString()));
+                } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+                    while (!operators.empty() && hasPrecedence(ch, operators.peek())) {
+                        evaluateTop(numbers, operators);
+                    }
+                    operators.push(ch);
+                } else if (ch == '(') {
+                    operators.push(ch);
+                } else if (ch == ')') {
+                    while (!operators.empty() && operators.peek() != '(') {
+                        evaluateTop(numbers, operators);
+                    }
+                    operators.pop(); // Pop '('
+                }
             }
+
+            while (!operators.empty()) {
+                evaluateTop(numbers, operators);
+            }
+
+            return numbers.pop();
+        } catch (Exception e) {
+            throw new ArithmeticException("Invalid expression");
         }
-        else{
-            val1 = Double.parseDouble(info.getText().toString());
+    }
+
+    private boolean hasPrecedence(char operator1, char operator2) {
+        if (operator2 == '(' || operator2 == ')') {
+            return false;
         }
+        if ((operator1 == '*' || operator1 == '/') && (operator2 == '+' || operator2 == '-')) {
+            return false;
+        }
+        return true;
+    }
+
+    private void evaluateTop(Stack<Double> numbers, Stack<Character> operators) {
+        double operand2 = numbers.pop();
+        double operand1 = numbers.pop();
+        char operator = operators.pop();
+        double result = 0;
+        switch (operator) {
+            case '+':
+                result = operand1 + operand2;
+                break;
+            case '-':
+                result = operand1 - operand2;
+                break;
+            case '*':
+                result = operand1 * operand2;
+                break;
+            case '/':
+                if (operand2 == 0) {
+                    throw new ArithmeticException("Division by zero");
+                }
+                result = operand1 / operand2;
+                break;
+        }
+        numbers.push(result);
+    }
+
+    private String formatResult(double result) {
+        String formattedResult = String.valueOf(result);
+        if (formattedResult.endsWith(".0")) {
+            formattedResult = formattedResult.replace(".0", "");
+        }
+        return formattedResult;
+    }
+
+    public void openChrome(View view) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://malayanmindanao.blackboard.com"));
+        startActivity(intent);
     }
 }
