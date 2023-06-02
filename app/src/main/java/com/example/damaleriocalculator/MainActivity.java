@@ -2,8 +2,6 @@ package com.example.damaleriocalculator;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -32,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView info;
     private Button clear;
     private TextView result;
-    private Button btnChrome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,13 +144,6 @@ public class MainActivity extends AppCompatActivity {
                 info.setText("");
             }
         });
-
-        btnChrome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openChrome(view);
-            }
-        });
     }
 
     private void setupUIViews() {
@@ -175,7 +165,6 @@ public class MainActivity extends AppCompatActivity {
         info = findViewById(R.id.tvControl);
         result = findViewById(R.id.tvDisplay);
         clear = findViewById(R.id.btnClear);
-        btnChrome = findViewById(R.id.btnChrome);
     }
 
     private double evaluateExpression(String expression) throws ArithmeticException {
@@ -261,8 +250,4 @@ public class MainActivity extends AppCompatActivity {
         return formattedResult;
     }
 
-    public void openChrome(View view) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://malayanmindanao.blackboard.com"));
-        startActivity(intent);
-    }
 }
